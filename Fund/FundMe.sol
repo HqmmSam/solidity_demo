@@ -55,11 +55,14 @@ contract FundMe {
     function getFund() external {
         require(convertEthToUsd(address(this).balance) >= TARGET, "Target is not reached");
         // transfer: transfer ETH and revert if tx failed
-        payable(msg.sender).transfer(address(this).balance);
+        //payable(msg.sender).transfer(address(this).balance);
         
         // send: transfer ETH and return false if failed
         // bool success = payable(msg.sender).send(address(this).balance);
         // require(success, "tx failed");
+        bool success;
+        (success, ) = payable(msg.sender).call{value: address(this).balance}("");
+        require(success, "transfer tx failed");
         
         // call: transfer ETH with data return value of function and bool 
         // bool success;
